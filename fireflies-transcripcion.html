@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fireflies – Transcripción Completa</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f4f6f9;
+      color: #222;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.09);
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 36px 40px;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h1 span.emoji { font-size: 1.6rem; }
+
+    .subtitle {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 28px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #dde1e8;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 18px;
+      background: #fafbfd;
+    }
+
+    input[type="text"]:focus, input[type="password"]:focus {
+      border-color: #5b6af0;
+      background: #fff;
+    }
+
+    .row-api {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      margin-bottom: 18px;
+    }
+
+    .row-api > div { flex: 1; margin-bottom: 0; }
+    .row-api input { margin-bottom: 0; }
+
+    .btn {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.1s;
+      white-space: nowrap;
+    }
+
+    .btn:active { transform: scale(0.97); }
+
+    .btn-primary {
+      background: #5b6af0;
+      color: #fff;
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border-radius: 9px;
+      margin-top: 4px;
+    }
+
+    .btn-primary:hover { background: #4756e0; }
+    .btn-primary:disabled { background: #aab0f5; cursor: not-allowed; }
+
+    .btn-toggle {
+      background: #f0f0f0;
+      color: #555;
+      height: 42px;
+      margin-bottom: 18px;
+    }
+
+    .btn-toggle:hover { background: #e4e4e4; }
+
+    .error {
+      background: #fff0f0;
+      border: 1.5px solid #fca5a5;
+      color: #b91c1c;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 0.88rem;
+      margin-top: 20px;
+      display: none;
+    }
+
+    .result-box {
+      margin-top: 30px;
+      display: none;
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .result-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .result-meta {
+      font-size: 0.8rem;
+      color: #888;
+    }
+
+    .btn-copy {
+      background: #eef0fe;
+      color: #5b6af0;
+      padding: 7px 14px;
+      font-size: 0.83rem;
+    }
+
+    .btn-copy:hover { background: #dde0fc; }
+
+    .transcript {
+      background: #f8f9fb;
+      border: 1.5px solid #e4e7ef;
+      border-radius: 10px;
+      padding: 20px 22px;
+      max-height: 520px;
+      overflow-y: auto;
+      font-size: 0.93rem;
+      line-height: 1.65;
+    }
+
+    .sentence {
+      margin-bottom: 14px;
+    }
+
+    .speaker {
+      font-weight: 700;
+      color: #5b6af0;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 1px;
+    }
+
+    .time {
+      font-size: 0.75rem;
+      color: #aaa;
+      margin-left: 6px;
+      font-weight: 400;
+    }
+
+    .text { color: #2d2d2d; }
+
+    .loader {
+      display: none;
+      text-align: center;
+      padding: 30px 0;
+      color: #888;
+      font-size: 0.9rem;
+    }
+
+    .spinner {
+      width: 28px; height: 28px;
+      border: 3px solid #e0e3f5;
+      border-top-color: #5b6af0;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 12px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .divider {
+      border: none;
+      border-top: 1.5px solid #eee;
+      margin: 24px 0;
+    }
+
+    .tip {
+      font-size: 0.8rem;
+      color: #aaa;
+      margin-top: 10px;
+    }
+
+    .tip a { color: #5b6af0; text-decoration: none; }
+    .tip a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <!-- PUERTA DE CLAVE -->
+  <div id="gate" style="position:fixed;inset:0;background:#f4f6f9;display:flex;align-items:center;justify-content:center;z-index:9999;">
+    <div class="card" style="max-width:360px;text-align:center;">
+      <h1 style="justify-content:center;"><span class="emoji">🔒</span> Acceso</h1>
+      <p class="subtitle" style="margin-bottom:18px;">Ingresá la clave para entrar.</p>
+      <input type="password" id="gatePass" placeholder="Clave..." autocomplete="off"/>
+      <button class="btn btn-primary" onclick="checkGate()">Entrar</button>
+      <p class="tip" id="gateError" style="color:#b91c1c;display:none;">Clave incorrecta.</p>
+    </div>
+  </div>
+
+  <div class="card" style="display:none;" id="app">
+    <h1><span class="emoji">🎙️</span> Fireflies – Transcripción Completa</h1>
+    <p class="subtitle">Pegá la URL de una reunión de Fireflies y obtené la transcripción completa.</p>
+
+    <hr class="divider">
+
+    <!-- API KEY -->
+    <label for="apiKey">API Key de Fireflies</label>
+    <div class="row-api">
+      <div>
+        <input type="password" id="apiKey" placeholder="Pegá tu API key aquí..." autocomplete="off" value=""/>
+      </div>
+      <button class="btn btn-toggle" onclick="toggleKey()">👁 Ver</button>
+    </div>
+    <p class="tip">Conseguila en <a href="https://app.fireflies.ai/settings" target="_blank">app.fireflies.ai → Settings → API Key</a></p>
+
+    <hr class="divider">
+
+    <!-- URL -->
+    <label for="meetingUrl">URL de la reunión</label>
+    <input type="text" id="meetingUrl"
+      placeholder="https://m.fireflies.ai/view/NombreReu::ID..."
+      value=""/>
+
+    <button class="btn btn-primary" onclick="fetchTranscript()" id="fetchBtn">
+      Obtener transcripción
+    </button>
+
+    <!-- LOADER -->
+    <div class="loader" id="loader">
+      <div class="spinner"></div>
+      Obteniendo transcripción...
+    </div>
+
+    <!-- ERROR -->
+    <div class="error" id="errorBox"></div>
+
+    <!-- RESULTADO -->
+    <div class="result-box" id="resultBox">
+      <div class="result-header">
+        <div>
+          <div class="result-title" id="resultTitle"></div>
+          <div class="result-meta" id="resultMeta"></div>
+        </div>
+        <button class="btn btn-copy" onclick="copyTranscript()">📋 Copiar texto</button>
+      </div>
+      <div class="transcript" id="transcriptContent"></div>
+    </div>
+  </div>
+
+  <script>
+    // --- Puerta de clave (simple, solo para espantar curiosos) ---
+    const CLAVE = 'fireflies2026';
+    function checkGate() {
+      const val = document.getElementById('gatePass').value;
+      if (val === CLAVE) {
+        document.getElementById('gate').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+      } else {
+        document.getElementById('gateError').style.display = 'block';
+      }
+    }
+    document.getElementById('gatePass').addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.stopPropagation(); checkGate(); }
+    });
+
+    const API_URL = 'https://api.fireflies.ai/graphql';
+
+    // Lista de formas de alcanzar la API (directo primero, luego proxies)
+    const STRATEGIES = [
+      url => url,                                                          // directo (Fireflies puede tener CORS abierto)
+      url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,      // proxy 1
+      url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`, // proxy 2 (solo GET, saltear si falla)
+      url => `https://thingproxy.freeboard.io/fetch/${url}`,              // proxy 3
+    ];
+
+    function toggleKey() {
+      const input = document.getElementById('apiKey');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+
+    function extractId(url) {
+      // Eliminar query string antes de parsear
+      const clean = url.split('?')[0].split('#')[0];
+      // Buscar ::ID al final del path
+      const match = clean.match(/::([A-Za-z0-9]+)\s*$/i);
+      if (match) return match[1];
+      // Fallback: último segmento
+      const parts = clean.split('/');
+      return parts[parts.length - 1] || null;
+    }
+
+    function formatTime(ms) {
+      if (ms == null) return '';
+      const totalSec = Math.floor(ms / 1000);
+      const m = Math.floor(totalSec / 60).toString().padStart(2, '0');
+      const s = (totalSec % 60).toString().padStart(2, '0');
+      return `${m}:${s}`;
+    }
+
+    function showError(msg) {
+      const box = document.getElementById('errorBox');
+      box.textContent = msg;
+      box.style.display = 'block';
+    }
+
+    function hideError() {
+      document.getElementById('errorBox').style.display = 'none';
+    }
+
+    async function fetchTranscript() {
+      hideError();
+      document.getElementById('resultBox').style.display = 'none';
+
+      const apiKey = document.getElementById('apiKey').value.trim();
+      const url    = document.getElementById('meetingUrl').value.trim();
+
+      if (!apiKey) return showError('Por favor ingresá tu API key de Fireflies.');
+      if (!url)    return showError('Por favor ingresá la URL de la reunión.');
+
+      const transcriptId = extractId(url);
+      if (!transcriptId) return showError('No se pudo extraer el ID de la reunión desde la URL.');
+
+      const btn = document.getElementById('fetchBtn');
+      btn.disabled = true;
+      document.getElementById('loader').style.display = 'block';
+
+      const query = `
+        query GetTranscript($id: String!) {
+          transcript(id: $id) {
+            id
+            title
+            date
+            duration
+            organizer_email
+            sentences {
+              index
+              speaker_name
+              text
+              start_time
+              end_time
+            }
+          }
+        }
+      `;
+
+      const body = JSON.stringify({ query, variables: { id: transcriptId } });
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      };
+
+      let lastError = null;
+      let json = null;
+
+      for (const strategy of STRATEGIES) {
+        const targetUrl = strategy(API_URL);
+        try {
+          const response = await fetch(targetUrl, { method: 'POST', headers, body });
+          if (!response.ok) continue;
+          const raw = await response.json();
+          // allorigins envuelve en { contents: "..." }
+          json = raw.contents ? JSON.parse(raw.contents) : raw;
+          if (json && (json.data || json.errors)) break; // respuesta válida de GraphQL
+        } catch (e) {
+          lastError = e;
+        }
+      }
+
+      try {
+        if (!json) throw lastError || new Error('No se pudo conectar con la API de Fireflies.');
+
+        if (json.errors && json.errors.length) {
+          throw new Error(json.errors.map(e => e.message).join('. '));
+        }
+
+        const t = json.data && json.data.transcript;
+        if (!t) throw new Error('No se encontró la transcripción. Verificá el ID o los permisos de la API key.');
+
+        renderTranscript(t);
+
+      } catch (err) {
+        showError('Error: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        document.getElementById('loader').style.display = 'none';
+      }
+    }
+
+    function renderTranscript(t) {
+      document.getElementById('resultTitle').textContent = t.title || 'Reunión sin título';
+
+      const date = t.date ? new Date(t.date).toLocaleDateString('es-AR', {
+        day: '2-digit', month: 'long', year: 'numeric'
+      }) : '';
+      const dur = t.duration ? `${Math.floor(t.duration / 60)} min` : '';
+      document.getElementById('resultMeta').textContent =
+        [date, dur, t.organizer_email].filter(Boolean).join(' · ');
+
+      const sentences = (t.sentences || []).sort((a, b) => a.index - b.index);
+      const container = document.getElementById('transcriptContent');
+      container.innerHTML = '';
+
+      if (!sentences.length) {
+        container.innerHTML = '<em style="color:#aaa">No hay oraciones en esta transcripción.</em>';
+      } else {
+        sentences.forEach(s => {
+          const div = document.createElement('div');
+          div.className = 'sentence';
+          div.innerHTML = `
+            <div class="speaker">
+              ${s.speaker_name || 'Desconocido'}
+              <span class="time">${formatTime(s.start_time)}</span>
+            </div>
+            <div class="text">${escapeHtml(s.text)}</div>
+          `;
+          container.appendChild(div);
+        });
+      }
+
+      document.getElementById('resultBox').style.display = 'block';
+      document.getElementById('resultBox').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function escapeHtml(str) {
+      return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function copyTranscript() {
+      const sentences = document.querySelectorAll('.sentence');
+      let text = '';
+      sentences.forEach(s => {
+        const speaker = s.querySelector('.speaker')?.childNodes[0]?.textContent?.trim() || '';
+        const time    = s.querySelector('.time')?.textContent?.trim() || '';
+        const body    = s.querySelector('.text')?.textContent?.trim() || '';
+        text += `[${time}] ${speaker}\n${body}\n\n`;
+      });
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.querySelector('.btn-copy');
+        btn.textContent = '✅ Copiado!';
+        setTimeout(() => btn.textContent = '📋 Copiar texto', 2000);
+      });
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && document.getElementById('gate').style.display === 'none') fetchTranscript();
+    });
+  </script>
+</body>
+</html>
