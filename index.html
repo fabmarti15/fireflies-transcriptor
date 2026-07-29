@@ -251,6 +251,14 @@
       </div>
       <button class="btn btn-toggle" onclick="toggleKey()">👁 Ver</button>
     </div>
+    <p class="tip" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+      <label style="display:flex;align-items:center;gap:6px;margin:0;font-weight:400;text-transform:none;letter-spacing:0;cursor:pointer;">
+        <input type="checkbox" id="recordarKey" style="width:auto;margin:0;" onchange="guardarKey()"/>
+        Recordarla en este navegador
+      </label>
+      <span id="estadoKey" style="color:#16a34a;"></span>
+      <button class="btn btn-toggle" id="olvidarKey" onclick="olvidarKey()" style="display:none;padding:4px 10px;font-size:12px;">Olvidar</button>
+    </p>
     <p class="tip">Conseguila en <a href="https://app.fireflies.ai/settings/developer-settings" target="_blank">app.fireflies.ai → Settings → Developer Settings → API Key</a></p>
 
     <hr class="divider">
@@ -295,12 +303,52 @@
       if (val === CLAVE) {
         document.getElementById('gate').style.display = 'none';
         document.getElementById('app').style.display = 'block';
+        cargarKey();
       } else {
         document.getElementById('gateError').style.display = 'block';
       }
     }
     document.getElementById('gatePass').addEventListener('keydown', e => {
       if (e.key === 'Enter') { e.stopPropagation(); checkGate(); }
+    });
+
+    // --- Recordar la API key en este navegador (localStorage, nunca en el repo) ---
+    const KEY_STORE = 'fireflies_api_key';
+
+    function cargarKey() {
+      let guardada = null;
+      try { guardada = localStorage.getItem(KEY_STORE); } catch (e) {}
+      if (guardada) {
+        document.getElementById('apiKey').value = guardada;
+        document.getElementById('recordarKey').checked = true;
+        marcarKey('✓ guardada en este navegador');
+      }
+    }
+
+    function marcarKey(txt) {
+      document.getElementById('estadoKey').textContent = txt || '';
+      document.getElementById('olvidarKey').style.display = txt ? 'inline-block' : 'none';
+    }
+
+    function guardarKey() {
+      const activo = document.getElementById('recordarKey').checked;
+      const val = document.getElementById('apiKey').value.trim();
+      try {
+        if (activo && val) { localStorage.setItem(KEY_STORE, val); marcarKey('✓ guardada en este navegador'); }
+        else { localStorage.removeItem(KEY_STORE); marcarKey(activo ? 'pegá la key y se guarda sola' : ''); }
+      } catch (e) { marcarKey('este navegador no permite guardarla'); }
+    }
+
+    function olvidarKey() {
+      try { localStorage.removeItem(KEY_STORE); } catch (e) {}
+      document.getElementById('apiKey').value = '';
+      document.getElementById('recordarKey').checked = false;
+      marcarKey('');
+    }
+
+    // Si está activo el recordar, guarda a medida que la pega
+    document.getElementById('apiKey').addEventListener('input', () => {
+      if (document.getElementById('recordarKey').checked) guardarKey();
     });
 
     const API_URL = 'https://api.fireflies.ai/graphql';
